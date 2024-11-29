@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+require 'csv'
+require 'sinatra'
+require 'dotenv/load'
+
+require_relative 'lib/dokku_manager'
+require_relative 'lib/nginx_manager'
+
+nginx_config_name = ENV.fetch('NGINX_APP_SUBDOMAINS_CONFIG_FILE', nil)&.strip
+
+get '/test' do
+  "OK"
+end
+
+get '/add-platform-domain/:domain_name' do
+  dokku_add_domain(params[:domain_name])
+end
+
+get '/remove-platform-domain/:domain_name' do
+  dokku_remove_domain(params[:domain_name])
+end
+
+get '/remove-customer-domain/:domain_name' do
+  nginx_remove_subdomain(params[:domain_name])
+end
+
+get '/add-customer-domain/:domain_name' do
+  nginx_add_subdomain(params[:domain_name])
+end
